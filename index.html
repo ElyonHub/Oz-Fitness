@@ -439,6 +439,35 @@ svg path{stroke-linejoin:bevel}
   .scrollcue{display:block;position:absolute;right:6vw;bottom:5vh;z-index:4;color:var(--mut);font-size:.85rem}
 }
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}}
+
+/* ---------- Ajustes: pantallas bajas, claridad ---------- */
+:root{--mut:#a9a9a9}
+html{font-size:106%} html.fs1{font-size:118%} html.fs2{font-size:132%}
+.nav,.nav *{white-space:nowrap}
+.nav{font-size:15px}
+.nav .logo span{font-size:19px}
+.nl button{font-size:15px}.ncta{font-size:15px}
+.pillb{height:42px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.45);display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:14px;color:#fff}
+.pillb svg{width:18px;height:18px}.pillb b{font-weight:800}
+.hero{padding-top:92px}
+.hero .hint2{margin-top:14px;color:var(--mut);font-size:.95rem}
+.btn{min-height:64px;font-size:1.1rem}
+@media (max-width:420px){.nav .logo span{display:none}}
+@media (max-width:899px){
+  .plate{width:80%;right:-24%;top:22px}
+  .hero::after{background:linear-gradient(180deg,rgba(0,0,0,.45) 0,rgba(0,0,0,0) 10%,rgba(0,0,0,.1) 18%,rgba(0,0,0,.8) 31%,rgba(0,0,0,.96) 42%,#000 60%)}
+}
+@media (min-width:900px){
+  .nl{display:none}
+  .hero{padding-top:104px;padding-bottom:7vh}
+  .hl{font-size:clamp(3.6rem,min(8.6vw,14vh),10rem)}
+  .hero-copy{max-width:min(56vw,860px)}
+  .plate{width:min(86vh,54vw);right:-13vw;margin-top:calc(min(86vh,54vw)/-2 + 30px)}
+  .hero::after{background:linear-gradient(90deg,#000 0,rgba(0,0,0,.9) 34%,rgba(0,0,0,.35) 58%,rgba(0,0,0,0) 74%),linear-gradient(180deg,rgba(0,0,0,.55) 0,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 72%,#000 100%)}
+  .hero .ctas{flex-wrap:wrap;max-width:none}.hero .ctas .btn{flex:1 1 200px;max-width:300px;min-height:60px}
+  .scrollcue{display:none}
+}
+@media (min-width:1180px){.nl{display:flex}}
 </style>
 </head>
 <body>
@@ -736,7 +765,7 @@ function vWelcome(){
   return `<div class="welcome">
     <header class="nav" id="nav"><div class="logo">${I.mark()}<span>OZ FITNESS</span></div>
       <nav class="nl" aria-label="Secciones"><button data-a="jump" data-v="como">Cómo funciona</button><button data-a="jump" data-v="objetivos">Objetivos</button><button data-a="jump" data-v="ejercicios">Ejercicios</button><button data-a="jump" data-v="gimnasio">En el gimnasio</button></nav>
-      <div class="grow"></div>${sndBtn()}<button class="icon-btn" data-a="font" aria-label="Cambiar tamaño de letra">Aa</button><button class="ncta" data-a="start">Armar mi rutina</button></header>
+      <div class="grow"></div><button class="pillb" data-a="snd" aria-pressed="${SFX.on}">${SFX.on?I.snd:I.mute}${SFX.on?'Sonido':'Sin sonido'}</button><button class="pillb" data-a="font"><b>Aa</b>Letra</button><button class="ncta" data-a="start">Armar mi rutina</button></header>
     <section class="hero" id="hero">
       ${HERO_IMG?`<div class="ph" style="background-image:url(${HERO_IMG})"></div>`:''}
       <div class="beams" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -746,6 +775,7 @@ function vWelcome(){
         <h1 class="x hl"><span><i>Tu rutina.</i></span><span><i>Lista en</i></span><span><i>tres toques.</i></span></h1>
         <p class="lead">Escanea el código en Oz, dinos qué quieres lograr y entrena con cada ejercicio explicado y animado.</p>
         <div class="ctas">${resume}<button class="btn ${resume?'btn-line':'btn-main'}" data-a="start">${resume?'Armar un plan nuevo':'Armar mi rutina'}</button><button class="btn btn-line" data-a="guide">No sé por dónde empezar<small>Te damos un plan de inicio</small></button></div>
+        <p class="hint2">Son 3 preguntas y tarda menos de un minuto. No necesitas registrarte.</p>
       </div>
       <span class="scrollcue" aria-hidden="true">Desliza para ver más</span>
     </section>
@@ -854,7 +884,7 @@ function vSession(){
       const complete=d>=cnt;
       let main='',side='',note='',ctrl='';
       if(r.kind==='sets'){ main=`${r.sets} × ${esc(r.reps.replace(' por lado',''))}<small>${r.reps.includes('lado')?'por lado':'reps'}</small>`;
-        side=`<span>Descanso <b>${fmt(r.rest)}</b></span>${r.rir?`<span>Esfuerzo <b>${r.rir===1?'deja 1':'deja '+r.rir}</b></span>`:''}`;
+        side=`<span>Descanso <b>${fmt(r.rest)}</b></span>${r.rir?`<span>Termina con fuerza para <b>${r.rir} más</b></span>`:''}`;
         ctrl=`<div class="sets" role="group" aria-label="Series">${Array.from({length:cnt},(_,i)=>`<button class="set ${i<d?'done':i===d?'next':''}${S._just===it.key+':'+i?' just':''}" data-a="set" data-k="${it.key}" data-i="${i}" aria-label="Serie ${i+1}${i<d?', hecha':''}">${i<d?I.check:i+1}</button>`).join('')}</div>`; }
       if(r.kind==='hold'){ main=`${r.sets} × ${r.sec}<small>seg${r.lado?' por lado':''}</small>`; side=`<span>Descanso <b>${fmt(r.rest)}</b></span><span>Toca la serie y empieza el conteo</span>`;
         ctrl=`<div class="sets" role="group" aria-label="Series">${Array.from({length:cnt},(_,i)=>`<button class="set ${i<d?'done':i===d?'next':''}${S._just===it.key+':'+i?' just':''}" data-a="set" data-k="${it.key}" data-i="${i}" aria-label="Serie ${i+1}">${i<d?I.check:i+1}</button>`).join('')}</div>`; }
@@ -917,7 +947,7 @@ function sheetHow(id,key){
   <h4>Paso a paso</h4><ol class="steps">${ex.s.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
   <h4>Claves</h4><div class="cue ok"><b>Haz</b><span>${esc(ex.k)}</span></div><div class="cue no"><b>Evita</b><span>${esc(ex.e)}</span></div>
   ${ex.alt?`<h4>Si el equipo está ocupado</h4><p>Puedes hacer <b style="color:var(--fg)">${esc(X[ex.alt].n)}</b> en ${ZONES[X[ex.alt].z].toLowerCase()}.</p>`:''}
-  <h4>¿Cuánto esfuerzo?</h4><p>Elige un peso con el que termines cada serie sintiendo que podrías hacer algunas repeticiones más, las que indica “deja”. No necesitas llegar al fallo.</p>
+  <h4>¿Cuánto esfuerzo?</h4><p>Elige un peso con el que termines cada serie sintiendo que podrías hacer algunas repeticiones más, las que indica cada ejercicio. No necesitas llegar al fallo.</p>
   <p class="disclaim">¿Dudas con la técnica? Cualquier entrenador de Oz te ayuda con gusto.</p>`); startFig(id);
 }
 
@@ -1021,7 +1051,7 @@ function act(b){
     case 'jump':{ const el=document.getElementById(v); if(el) el.scrollIntoView({behavior:reduced?'auto':'smooth'}); break; }
     case 'pickgoal': S.guided=false; S.preGoal=true; S.level=null; S.goal=v; S.days=null; S.low=false; S.step=1; go('step'); break;
     case 'show': showAuto=false; setShow(b.dataset.id); break;
-    case 'snd': SFX.toggle(); rerenderKeep(); break;
+    case 'snd': SFX.toggle(); rerenderKeep(); toast(SFX.on?'Sonido activado':'Sonido apagado'); break;
     case 'spin': heroSpin(); break;
     case 'font':{ const h=document.documentElement; const c=h.classList.contains('fs2')?0:h.classList.contains('fs1')?2:1; h.classList.remove('fs1','fs2'); if(c) h.classList.add('fs'+c); toast(['Letra normal','Letra grande','Letra extra grande'][c]); break; }
     case 'owner': sheetOwner(); break;
@@ -1093,9 +1123,10 @@ const SFX=(()=>{ let ctx=null,on=true; try{on=localStorage.getItem('oz-snd')!=='
   const vib=ms=>{ try{ on&&navigator.vibrate&&navigator.vibrate(ms); }catch(e){} };
   return { get on(){return on},
     toggle(){ on=!on; try{localStorage.setItem('oz-snd',on?'1':'0')}catch(e){} if(on) this.select(); },
-    tap(){ tone(1500,.03,'square',.035); },
-    select(){ tone(540,.07,'triangle',.13); tone(810,.1,'triangle',.13,.06); vib(12); },
-    whoosh(){ noise(.26,.09,500,.8,2800); },
+    tap(){ tone(1500,.035,'square',.09); },
+    intro(){ tone(70,.5,'sine',.7,0,38); noise(.35,.25,300,.7,1800); [196,293.7,392,587.3].forEach((f,i)=>tone(f,1.1,'sawtooth',.06,.12+i*.07)); },
+    select(){ tone(540,.08,'triangle',.24); tone(810,.12,'triangle',.24,.06); vib(12); },
+    whoosh(){ noise(.28,.2,500,.8,2800); },
     clank(){ noise(.045,.45,3200,.7); [587,932,1410,2093,2960].forEach((f,i)=>tone(f,.55-.08*i,'sine',.1/(i+1)+.02)); tone(95,.14,'sine',.45,0,48); vib(25); },
     tick(){ tone(880,.09,'square',.07); },
     go(){ tone(660,.09,'square',.07); tone(1320,.28,'square',.08,.1); vib(40); },
@@ -1227,6 +1258,7 @@ function startFig(id){ const box=document.getElementById('figbox'); if(!box) ret
   if(reduced){ box.innerHTML=figSVG(id,.85)+cap; return; } const t0=performance.now();
   (function f(now){ if(!box.isConnected) return; box.innerHTML=figSVG(id,(1-Math.cos(6.2832*(now-t0)/per))/2)+cap; requestAnimationFrame(f); })(t0); }
 
+document.addEventListener('pointerdown',()=>SFX.intro(),{once:true});
 // exponer para pruebas
 window.__OZ={X,T,PLAN,GOALS,planKeys,buildSession,itemRx,weeklyVolume,rx,figSVG,FIG};
 render();
